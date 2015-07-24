@@ -35,13 +35,13 @@ void draw() {
 	image(playlist[index], 0, 0);
 	
 	println("index: "+index);	
-	println("int( (millis() % period) ): "+int( (millis() % period) ));
+	println("255 - int( (millis() % period )): "+ (255 - int( (millis() % period ))));
 	if (index + 1 == dataCount) {
 		exit();
 	}
-
+	tint(255, 255 - int( (millis() % period )));
 	image(playlist[index], 0, 0);
-	tint(255, 255 - int( (millis() % (period/2)) ));
+	
 
 	if (saveIt && frameCount < frameRate * 60 * minutes) {
 		println("frameRate * 60 * minutes: "+frameRate * 60 * minutes);
