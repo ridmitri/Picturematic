@@ -1,6 +1,6 @@
 /* Build system Processing */
 int minutes = 1;
-boolean saveIt = false;
+boolean saveIt = true	;
 /* pictures per second */
 int delay = 0;
 int drama = 0;
@@ -39,7 +39,7 @@ void draw() {
 	if (index + 1 == dataCount) {
 		exit();
 	}
-	tint(255, 255 - int( (millis() % period )));
+	tint(255, 255 - int( (millis() % period ) / (period/255)) );
 	image(playlist[index], 0, 0);
 	
 
