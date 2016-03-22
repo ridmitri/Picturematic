@@ -1,10 +1,13 @@
 /* Build system Processing */
+
+import java.io.File;
+
 int minutes = 1;
 boolean saveIt = false;
 /* pictures per second */
 
 String dataName = "matic_";
-int dataCount = 32;
+int dataCount = 13;
 int nfIndex = 3;
 
 int alpha;
@@ -16,19 +19,18 @@ int flow = 1;
 PImage[] playlist = new PImage[dataCount];
 
 void setup() {
-	// size(360, 240);
-	size(720, 480);
+	size(480, 360);
 	smooth();
-    frameRate( 16 );
-
-    for (int i = 0; i < dataCount; i++ ) {
+    frameRate( 24 );
+    
+    for (int i = 0; i < playlist.length; i++ ) {
     	playlist[i] = loadImage(dataName + nf(i + 1, nfIndex) + ".png");
     }
 }
 
 void draw() {
-	println("-------");
-	println("index: "+index + "; flow: " + flow + "; dataCount: "+dataCount + "; alpha: " + alpha);
+	//println("-------");
+	//println("index: "+index + "; flow: " + flow + "; dataCount: "+dataCount + "; alpha: " + alpha);
 	alpha+=int(random(11, 13));
 
 	if (alpha > 250) {
@@ -91,15 +93,15 @@ void layer(int a, int idx) {
 	println("idx: "+idx + "; a: " + a + "; idx - dataCount: " + (idx - dataCount));
 	tint(255, a); // 127
 	image(playlist[idx], 0, 0);
-	// if (idx >= dataCount - 1) {
-	// 	println("OverIndex: "+idx);
-	// 	image(playlist[dataCount - 1], 0, 0);	
-	// } else if (idx < 0) {
-	// 	println("LowIndex: "+idx);
-	// 	image(playlist[0], 0, 0);
-	// } else {
-	// 	image(playlist[idx], 0, 0);
-	// }
+	if (idx >= dataCount - 1) {
+		println("OverIndex: "+idx);
+		image(playlist[dataCount - 1], 0, 0);	
+	} else if (idx < 0) {
+		println("LowIndex: "+idx);
+		image(playlist[0], 0, 0);
+	} else {
+		image(playlist[idx], 0, 0);
+	}
 }
 
 void mousePressed() {
