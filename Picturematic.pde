@@ -1,29 +1,25 @@
 /* Build system Processing */
+/* 300 pictures 1280x720 24fps Finished in 559.2s -> 46 sec movie */
 
-import java.io.File;
-
-int minutes = 1;
-boolean saveIt = false;
-/* pictures per second */
+boolean saveIt = true;
 
 String dataName = "matic_";
-int dataCount = 13;
+
+// set manually the number of pictures loading from ./data
+int dataCount = 300;
 int nfIndex = 3;
 
-int alpha;
-int index = 1;
-
-boolean trigger = true;
-int flow = 1;
-
-int layerCount = 4;
+// opacity rate
+int delta = 8;
+int alpha = 0;
+int index = 0;
 
 PImage[] playlist = new PImage[dataCount];
 
 void setup() {
-	size(480, 360);
+	size(1280, 720);
 	smooth();
-	frameRate( 24 );
+	frameRate(24);
 
 	for (int i = 0; i < playlist.length; i++ ) {
 		playlist[i] = loadImage(dataName + nf(i + 1, nfIndex) + ".png");
@@ -31,64 +27,52 @@ void setup() {
 }
 
 void draw() {
-	alpha += int(random(11, 13));
+	alpha += delta;
 
-	if (alpha > 255) {
-		alpha = 0;
+	// set peak value depending on number of layers to print
+	int peak = int(255 / 8);
+	int cycle = cycle(alpha, peak);
 
-		index += 4;
-		if (index + 6 >= dataCount - 1) {
-			// index = dataCount-1;
+	// printing
+	layer(alpha + peak * (7 - cycle), index + cycle + 0);
+	layer(alpha + peak * (6 - cycle), index + cycle + 1);
+	layer(alpha + peak * (5 - cycle), index + cycle + 2);
+	layer(alpha + peak * (4 - cycle), index + cycle + 3);		
+	layer(alpha + peak * (3 - cycle), index + cycle + 4);
+	layer(alpha + peak * (2 - cycle), index + cycle + 5);
+	layer(alpha + peak * (1 - cycle), index + cycle + 6);
+	layer(alpha + peak * (0 - cycle), index + cycle + 7);		
+
+	// prepare the next cycle
+	if (alpha > 255 - delta) {
+		println("NEXT-INDEX: "+ index + "; ALPHA: " + alpha);
+		alpha = delta;
+		index += 8;
+		if (index + 8 - dataCount >= 0) {
+			println("FINAL-INDEX: "+ index + "; ALPHA: " + alpha);
+			index = 0;
 			if (saveIt) {
 				exit();
 			}
 		}
 	}
-
-	int peak = int(255 / 4);
-	int cycle = cycle(alpha, peak);
 	
-	layer(alpha + peak * (0 - (2 + cycle)), index + cycle); // 192 | 255 - cycle
-	layer(alpha + peak * (1 - (2 + cycle)), index + cycle + 1); // 128
-	layer(alpha + peak * (3 - (2 + cycle)), index + cycle + 2); // 64
-	layer(alpha + peak * (3 - (3 + cycle)), index + cycle + 3); // 0
-
 	if (saveIt) {
-		println("frameRate * 60 * minutes: " + frameRate * 60 * minutes);
-		save("frames/matic_" + nf(frameCount, 5) + ".png");
+		save("generated/picturematic_" + nf(frameCount, 5) + ".png");
 	}
 }
 
-void layerZ(int alpha, int index, int z, int count) {
-	int max = 255;
-	int peak = int(max / count);
-	int cycle = cycle(alpha, peak);
-
-	if (z == 0) {
-		
-	}
-}
-
+// counts number of cycle depending on peak threshold
 int cycle(int alpha, int peak) {
 	return (alpha - (alpha % peak)) / peak;
 }
 
+// prints layer with alpha image
 void layer(int a, int idx) {
-	println("idx: " + idx + "; a: " + a + "; idx - dataCount: " + (idx - dataCount));
-	tint(255, a); // 127
-	image(playlist[idx], 0, 0);
+	tint(255, a);
 
-	if (idx >= dataCount - 1) {
-		println("OverIndex: " + idx);
-		image(playlist[dataCount - 1], 0, 0);
-	} else if (idx < 0) {
-		println("LowIndex: " + idx);
-		image(playlist[0], 0, 0);
-	} else {
+	if (idx - dataCount < 0) {
+		println("idx: " + idx + "; a: " + a + "; idx - dataCount: " + (idx - dataCount));
 		image(playlist[idx], 0, 0);
 	}
-}
-
-void mousePressed() {
-	println("mousePressed");
 }

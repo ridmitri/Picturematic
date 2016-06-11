@@ -10,6 +10,7 @@ try {
 var files = fs.readdirSync('data');
 var amount = String(files.length).length;
 
+// imitates pad-left
 files.forEach(function (file, index) {
 	var filename = '';
 	for (var i = 0; i < amount - String(index).length; i ++) {
